@@ -85,8 +85,8 @@ que no caben. En esos casos `account_name` se trunca con `…` y el nombre ofici
 | §4 Subledger presupuestario | `presupuesto.py` + doctypes `Linea/Movimiento Presupuestario` | Completo, 12 tests |
 | §5 Estados Financieros (5) | `digecog/estados.py` + 5 Script Reports | Completo, 21 tests |
 | §7 Módulos secundarios | `nomina.py`, `encuestas.py`, `activos.py` + doctypes | Completo, 22 tests |
-| §5.6 Notas a los EEFF | doctype `Nota Estado Financiero` | Doctype listo, falta el reporte que las lista |
-| §8 Módulos parametrizables | doctypes `Solicitud Tramite Pago`, `Banco Nomina Config`, `Importacion SIAB` | Doctypes listos, falta la lógica |
+| §5.6 Notas a los EEFF | doctype + reporte que avisa cuáles faltan | Completo |
+| §8 Módulos parametrizables | `nomina_bancaria.py`, `Importacion SIAB`, `Solicitud Tramite Pago` | Completo, 19 tests |
 
 ## Instalación
 
