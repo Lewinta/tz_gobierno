@@ -196,3 +196,36 @@ def generar_y_adjuntar(payroll_entry, banco_config):
 	archivo.insert()
 
 	return {"file_url": archivo.file_url, "file_name": nombre}
+
+
+def asegurar_campo_cedula():
+	"""Campo de cédula en Employee.
+
+	ERPNext no trae un identificador nacional dominicano, y el archivo de nómina de
+	cualquier banco local lo exige. Se define aquí, que es el módulo que lo consume.
+	"""
+	from frappe.custom.doctype.custom_field.custom_field import create_custom_field
+
+	if frappe.db.exists("Custom Field", {"dt": "Employee", "fieldname": "custom_cedula"}):
+		return False
+
+	create_custom_field(
+		"Employee",
+		{
+			"fieldname": "custom_cedula",
+			"label": "Cédula",
+			"fieldtype": "Data",
+			"insert_after": "employee_name",
+			"unique": 1,
+			"description": "Cédula de identidad y electoral, 11 dígitos. La exige el "
+			"archivo de nómina de los bancos dominicanos.",
+		},
+	)
+	return True
+
+
+def instalar():
+	creado = asegurar_campo_cedula()
+	if creado:
+		frappe.db.commit()
+	return creado

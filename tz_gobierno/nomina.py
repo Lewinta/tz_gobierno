@@ -105,3 +105,118 @@ def asegurar_componente():
 	doc.flags.ignore_permissions = True
 	doc.insert()
 	return doc.name
+
+
+# --------------------------------------------------------------------------- #
+# La nómina como ejecución presupuestaria
+# --------------------------------------------------------------------------- #
+"""
+En una institución pública el sueldo es, normalmente, la mayor línea del
+presupuesto: en el CES son 18 de 23.9 millones. Si la nómina no pasa por el
+subledger, el Estado de Comparación de Importes Presupuestados y Realizados muestra
+0% de ejecución en la línea más grande, que es un resultado sencillamente falso.
+
+El §4.3 del spec solo engancha Purchase Order / Purchase Invoice / Payment Entry.
+Esto lo completa por el lado del personal:
+
+- El volante de pago **devenga** contra la línea presupuestaria de la cuenta de
+  sueldos y el centro de costo del empleado.
+- El pago de la corrida **liquida** ese devengado. Va como paso explícito y no
+  adivinando cuál Journal Entry corresponde a qué nómina: ERPNext no deja enlace
+  entre el asiento bancario y la corrida, y una heurística por monto y fecha se
+  rompería el día que dos corridas coincidan.
+"""
+
+
+def _lineas_de_volante(slip):
+	"""Mapea los devengos del volante a (línea presupuestaria, monto)."""
+	from tz_gobierno.presupuesto import fiscal_year_de, resolver_linea
+
+	centro = frappe.db.get_value("Employee", slip.employee, "payroll_cost_center")
+	if not centro:
+		return {}
+
+	fiscal_year = fiscal_year_de(slip.end_date, slip.company)
+	mapa = {}
+
+	for devengo in slip.earnings:
+		cuenta = frappe.db.get_value(
+			"Salary Component Account",
+			{"parent": devengo.salary_component, "company": slip.company},
+			"account",
+		)
+		if not cuenta:
+			continue
+
+		linea = resolver_linea(slip.company, fiscal_year, cuenta, centro)
+		if not linea:
+			continue
+
+		mapa[linea] = mapa.get(linea, 0.0) + flt(devengo.amount)
+
+	return mapa
+
+
+def registrar_devengado_nomina(doc, method=None):
+	from tz_gobierno.presupuesto import ETAPA_DEVENGADO, _crear_movimiento, recalcular
+
+	for linea, monto in _lineas_de_volante(doc).items():
+		_crear_movimiento(
+			linea, doc.end_date, ETAPA_DEVENGADO, monto, doc,
+			observaciones=_("Devengo de nómina {0}").format(doc.name),
+		)
+		recalcular(linea)
+
+
+def revertir_devengado_nomina(doc, method=None):
+	from tz_gobierno.presupuesto import (
+		ETAPA_DEVENGADO,
+		ETAPA_REVERSADO,
+		_crear_movimiento,
+		_movimientos_vivos,
+		recalcular,
+	)
+
+	for linea, monto in _movimientos_vivos(doc, ETAPA_DEVENGADO).items():
+		_crear_movimiento(
+			linea, doc.end_date, ETAPA_REVERSADO, monto, doc,
+			etapa_revertida=ETAPA_DEVENGADO,
+			observaciones=_("Reverso por cancelación de {0}").format(doc.name),
+		)
+		recalcular(linea)
+
+
+@frappe.whitelist()
+def registrar_pago_nomina(payroll_entry):
+	"""Pasa de devengado a pagado la nómina de una corrida ya pagada al banco."""
+	from tz_gobierno.presupuesto import (
+		ETAPA_DEVENGADO,
+		ETAPA_PAGADO,
+		ETAPA_REVERSADO,
+		_crear_movimiento,
+		_movimientos_vivos_de,
+		recalcular,
+	)
+
+	corrida = frappe.get_doc("Payroll Entry", payroll_entry)
+	slips = frappe.get_all(
+		"Salary Slip",
+		filters={"payroll_entry": payroll_entry, "docstatus": 1},
+		pluck="name",
+	)
+
+	movidos = 0
+	for slip in slips:
+		vivos = _movimientos_vivos_de("Salary Slip", slip, ETAPA_DEVENGADO)
+		for linea, monto in vivos.items():
+			referencia = frappe._dict(doctype="Salary Slip", name=slip)
+			_crear_movimiento(
+				linea, corrida.posting_date, ETAPA_REVERSADO, monto, referencia,
+				etapa_revertida=ETAPA_DEVENGADO,
+				observaciones=_("Transición a pagado por la corrida {0}").format(payroll_entry),
+			)
+			_crear_movimiento(linea, corrida.posting_date, ETAPA_PAGADO, monto, referencia)
+			recalcular(linea)
+			movidos += 1
+
+	return {"volantes": len(slips), "lineas_afectadas": movidos}

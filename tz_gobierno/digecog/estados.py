@@ -134,6 +134,10 @@ def situacion_financiera(company, as_on_date, comparativo=False):
 		# El resultado del período no sale de una cuenta de patrimonio: es el
 		# ahorro/desahorro del ejercicio, que todavía no se ha capitalizado.
 		por_rubro[mapeo.RUBRO_RESULTADO_DEL_PERIODO] = resultado_del_periodo(company, fecha)
+		# Los resultados de ejercicios anteriores que todavía no se capitalizaron.
+		por_rubro[mapeo.RUBRO_RESULTADO_ACUMULADO] = flt(
+			por_rubro.get(mapeo.RUBRO_RESULTADO_ACUMULADO)
+		) + resultado_acumulado_anterior(company, fecha)
 		return por_rubro, sin_mapear
 
 	actual, sin_mapear = rubros_de(as_on_date)
@@ -255,6 +259,29 @@ def rendimiento_financiero(company, desde, hasta, comparativo=False):
 	filas.append(_fila("Intereses minoritarios", 0.0, 0.0 if comparativo else None, nivel=2))
 
 	return filas, sin_mapear
+
+
+def resultado_acumulado_anterior(company, hasta):
+	"""Ahorro/desahorro acumulado de todos los ejercicios ANTERIORES al de `hasta`.
+
+	El Estado de Situación Financiera tiene que cuadrar tanto si la institución ya
+	cerró el ejercicio anterior como si no:
+
+	- Si se cerró, los asientos de cierre dejaron las cuentas de resultado en cero y
+	  el importe vive en la cuenta patrimonial de resultados acumulados (3.1.04).
+	- Si no se cerró, el importe sigue en las cuentas de resultado de esos años.
+
+	Sumar ambas fuentes da lo correcto en los dos casos, porque nunca están las dos
+	cargadas a la vez. Sin esto, el balance del segundo ejercicio se descuadra
+	exactamente por el resultado del primero.
+	"""
+	inicio_ejercicio = getdate(hasta).replace(month=1, day=1)
+	cierre_anterior = add_days(inicio_ejercicio, -1)
+
+	saldos = saldos_por_cuenta(company, cierre_anterior)
+	ingresos = sum(flt(m) for c, m in saldos.items() if c and c.startswith("4"))
+	gastos = sum(flt(m) for c, m in saldos.items() if c and c.startswith("5"))
+	return ingresos - gastos
 
 
 def resultado_del_periodo(company, hasta, desde=None):

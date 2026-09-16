@@ -2,6 +2,7 @@
  "actions": [],
  "allow_bulk_edit": 1,
  "allow_rename": 1,
+ "autoname": "format:PBE-{YYYY}-{####}",
  "creation": "2026-09-16 12:20:55.851930",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -43,7 +44,7 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
-   "label": "Instituci\u00f3n",
+   "label": "Institución",
    "options": "Company",
    "reqd": 1
   },
@@ -52,7 +53,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "description": "El banco es el prestamista. La instituci\u00f3n solo es garante y descuenta la cuota por n\u00f3mina; el pasivo no es suyo.",
+   "description": "El banco es el prestamista. La institución solo es garante y descuenta la cuota por nómina; el pasivo no es suyo.",
    "fieldname": "banco",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -81,7 +82,7 @@
   {
    "fieldname": "monto_prestamo",
    "fieldtype": "Currency",
-   "label": "Monto del Pr\u00e9stamo",
+   "label": "Monto del Préstamo",
    "reqd": 1
   },
   {
@@ -98,7 +99,7 @@
   {
    "fieldname": "numero_cuotas",
    "fieldtype": "Int",
-   "label": "N\u00famero de Cuotas",
+   "label": "Número de Cuotas",
    "reqd": 1
   },
   {
@@ -115,10 +116,10 @@
    "read_only": 1
   },
   {
-   "description": "Componente de n\u00f3mina con el que se aplica el descuento.",
+   "description": "Componente de nómina con el que se aplica el descuento.",
    "fieldname": "salary_component",
    "fieldtype": "Link",
-   "label": "Componente de Deducci\u00f3n",
+   "label": "Componente de Deducción",
    "options": "Salary Component"
   }
  ],

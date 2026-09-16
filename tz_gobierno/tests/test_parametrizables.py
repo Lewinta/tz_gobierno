@@ -42,9 +42,26 @@ class TestNominaBancaria(BaseParametrizables):
 
 	@classmethod
 	def config_csv(cls):
+		"""Config de formato conocida.
+
+		Si ya existe se le reescriben las columnas en vez de reusarla tal cual: el
+		sitio de desarrollo acumula estado entre corridas y una columna de más
+		haría fallar la aserción de orden por un motivo ajeno a lo que se prueba.
+		"""
 		nombre = "Banco de Prueba CSV"
+		columnas = [
+			{"posicion": 2, "campo": "Nombre completo"},
+			{"posicion": 1, "campo": "Cuenta bancaria del empleado"},
+			{"posicion": 3, "campo": "Monto neto"},
+		]
+
 		if frappe.db.exists("Banco Nomina Config", nombre):
+			doc = frappe.get_doc("Banco Nomina Config", nombre)
+			doc.set("columnas", columnas)
+			doc.flags.ignore_permissions = True
+			doc.save()
 			return nombre
+
 		doc = frappe.get_doc(
 			{
 				"doctype": "Banco Nomina Config",
@@ -54,11 +71,7 @@ class TestNominaBancaria(BaseParametrizables):
 				"delimitador": ",",
 				"extension": "csv",
 				"verificado": 1,
-				"columnas": [
-					{"posicion": 2, "campo": "Nombre completo"},
-					{"posicion": 1, "campo": "Cuenta bancaria del empleado"},
-					{"posicion": 3, "campo": "Monto neto"},
-				],
+				"columnas": columnas,
 			}
 		)
 		doc.flags.ignore_permissions = True

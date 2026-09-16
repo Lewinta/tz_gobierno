@@ -278,8 +278,16 @@ doc_events = {
 	# cuota por nómina; el pasivo es del banco, no suyo.
 	"Salary Slip": {
 		"validate": "tz_gobierno.nomina.aplicar_deducciones_de_prestamos",
-		"on_submit": "tz_gobierno.nomina.registrar_cuotas_pagadas",
-		"on_cancel": "tz_gobierno.nomina.revertir_cuotas_pagadas",
+		"on_submit": [
+			"tz_gobierno.nomina.registrar_cuotas_pagadas",
+			# La nómina también es ejecución presupuestaria, y suele ser la línea
+			# más grande del presupuesto de una institución.
+			"tz_gobierno.nomina.registrar_devengado_nomina",
+		],
+		"on_cancel": [
+			"tz_gobierno.nomina.revertir_cuotas_pagadas",
+			"tz_gobierno.nomina.revertir_devengado_nomina",
+		],
 	},
 	"Respuesta Encuesta": {
 		"validate": "tz_gobierno.encuestas.validar_respuesta",
@@ -293,4 +301,8 @@ doc_events = {
 # El campo de Bienes Nacionales en Asset es un Custom Field, no parte de un doctype
 # propio, porque extiende el Asset estándar de ERPNext. Se asegura en cada migrate
 # para que exista en cualquier sitio donde se instale el app.
-after_migrate = ["tz_gobierno.activos.instalar", "tz_gobierno.rnc.instalar"]
+after_migrate = [
+	"tz_gobierno.activos.instalar",
+	"tz_gobierno.rnc.instalar",
+	"tz_gobierno.nomina_bancaria.instalar",
+]

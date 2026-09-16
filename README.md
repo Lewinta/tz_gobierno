@@ -114,6 +114,22 @@ bench --site <sitio> execute tz_gobierno.digecog.coa_import.ejecutar \
 > `NameError: name 'tz_gobierno' is not defined`. Ese mensaje **oculta el error real**.
 > Para depurar, invocar la función desde un script propio con `frappe.init()`.
 
+## Datos de demostración
+
+```bash
+bench --site gob.tzcode.net execute tz_gobierno.setup.datos_demo.ejecutar
+```
+
+Siembra dos ejercicios completos (2025 y 2026) sobre la institución del pliego:
+presupuesto formulado y reformado, transferencias trimestrales de la Administración
+Central, ciclo de compras con documentos parados **a propósito** en las tres etapas
+(comprometido / devengado / pagado), una compra directa sin orden previa, cinco
+empleados con nómina mensual y préstamos descontados, cinco activos depreciándose,
+lotes de tarjeta de crédito, encuesta de clima, las seis notas y trámites de pago.
+
+Es idempotente y **nunca siembra con fecha futura**: una demo con documentos de
+noviembre estando en septiembre se nota.
+
 ## Tests
 
 ```bash

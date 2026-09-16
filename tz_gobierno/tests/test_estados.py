@@ -365,3 +365,146 @@ class TestScriptReports(IntegrationTestCase):
 		               "Estado de Flujo de Efectivo DIGECOG"):
 			resultado = run(nombre, filters={}, ignore_prepared_report=True)
 			self.assertEqual(resultado.get("result"), [])
+
+
+class TestBalanceMultiEjercicio(IntegrationTestCase):
+	"""El balance tiene que cuadrar también en el segundo ejercicio.
+
+	Regresión de un bug que solo aparece con datos de dos años: el resultado del
+	ejercicio anterior no llegaba a ningún rubro del patrimonio, así que el balance
+	del segundo año se descuadraba exactamente por el ahorro del primero. Con un solo
+	año de datos el estado cuadra y el error pasa desapercibido.
+	"""
+
+	COMPANY_MULTI = "TZ Gob MultiAnio"
+	ABBR_MULTI = "TGM"
+
+	@classmethod
+	def setUpClass(cls):
+		super().setUpClass()
+		crear_company_sin_coa_estandar(cls.COMPANY_MULTI, cls.ABBR_MULTI)
+		cls.anio_previo = 2024
+		cls.anio_actual = 2025
+		for anio in (cls.anio_previo, cls.anio_actual):
+			if not frappe.db.exists("Fiscal Year", str(anio)):
+				frappe.get_doc(
+					{
+						"doctype": "Fiscal Year",
+						"year": str(anio),
+						"year_start_date": f"{anio}-01-01",
+						"year_end_date": f"{anio}-12-31",
+					}
+				).insert(ignore_permissions=True)
+		cls.crear_cuentas_multi()
+		cls.registrar_asientos_multi()
+		frappe.db.commit()
+
+	@classmethod
+	def crear_cuentas_multi(cls):
+		cls.ctas = {}
+		for codigo, nombre, root_type, is_group in CUENTAS:
+			existente = frappe.db.get_value(
+				"Account", {"account_number": codigo, "company": cls.COMPANY_MULTI}, "name"
+			)
+			if existente:
+				cls.ctas[codigo] = existente
+				continue
+			padre = codigo.rsplit(".", 1)[0] if "." in codigo else None
+			doc = frappe.get_doc(
+				{
+					"doctype": "Account",
+					"company": cls.COMPANY_MULTI,
+					"account_number": codigo,
+					"account_name": nombre,
+					"parent_account": cls.ctas.get(padre),
+					"is_group": is_group,
+					"root_type": root_type,
+					"report_type": "Balance Sheet" if codigo[0] in "123" else "Profit and Loss",
+				}
+			)
+			doc.flags.ignore_permissions = True
+			doc.flags.ignore_mandatory = True
+			doc.insert()
+			cls.ctas[codigo] = doc.name
+
+	@classmethod
+	def _je(cls, fecha, debe, haber, monto, titulo):
+		doc = frappe.get_doc(
+			{
+				"doctype": "Journal Entry",
+				"company": cls.COMPANY_MULTI,
+				"posting_date": fecha,
+				"user_remark": titulo,
+				"accounts": [
+					{"account": cls.ctas[debe], "debit_in_account_currency": monto},
+					{"account": cls.ctas[haber], "credit_in_account_currency": monto},
+				],
+			}
+		)
+		doc.flags.ignore_permissions = True
+		doc.insert()
+		doc.submit()
+
+	@classmethod
+	def registrar_asientos_multi(cls):
+		if frappe.db.exists("Journal Entry", {"company": cls.COMPANY_MULTI, "docstatus": 1}):
+			return
+		# Ejercicio anterior: deja un ahorro de 4,000 sin capitalizar.
+		cls._je(f"{cls.anio_previo}-06-30", "1.1.01.01", "4.1.01.01", 10_000, "Ingreso 2024")
+		cls._je(f"{cls.anio_previo}-07-31", "5.1.01.01", "1.1.01.01", 6_000, "Gasto 2024")
+		# Ejercicio actual: ahorro de 3,000.
+		cls._je(f"{cls.anio_actual}-06-30", "1.1.01.01", "4.1.01.01", 8_000, "Ingreso 2025")
+		cls._je(f"{cls.anio_actual}-07-31", "5.1.01.01", "1.1.01.01", 5_000, "Gasto 2025")
+
+	def _valor(self, filas, concepto):
+		for fila in filas:
+			if fila["concepto"] == concepto:
+				return flt(fila["monto_actual"])
+		self.fail(f"falta la línea {concepto!r}")
+
+	def test_el_primer_ejercicio_cuadra(self):
+		filas, _ = estados.situacion_financiera(
+			self.COMPANY_MULTI, f"{self.anio_previo}-12-31"
+		)
+		self.assertTrue(estados.cuadra_situacion_financiera(filas))
+
+	def test_el_segundo_ejercicio_tambien_cuadra(self):
+		filas, _ = estados.situacion_financiera(
+			self.COMPANY_MULTI, f"{self.anio_actual}-12-31"
+		)
+		self.assertTrue(
+			estados.cuadra_situacion_financiera(filas),
+			"el balance del segundo ejercicio se descuadra por el resultado del primero",
+		)
+
+	def test_el_resultado_anterior_va_a_resultado_acumulado(self):
+		filas, _ = estados.situacion_financiera(
+			self.COMPANY_MULTI, f"{self.anio_actual}-12-31"
+		)
+		self.assertEqual(self._valor(filas, "Resultado acumulado"), 4000.0)
+		self.assertEqual(
+			self._valor(filas, mapeo.RUBRO_RESULTADO_DEL_PERIODO), 3000.0
+		)
+
+	def test_el_resultado_del_periodo_no_arrastra_el_anterior(self):
+		"""El Rendimiento Financiero del año actual mide solo el año actual."""
+		filas, _ = estados.rendimiento_financiero(
+			self.COMPANY_MULTI, f"{self.anio_actual}-01-01", f"{self.anio_actual}-12-31"
+		)
+		self.assertEqual(
+			self._valor(filas, "Resultado del período (ahorro/desahorro)"), 3000.0
+		)
+
+	def test_resultado_acumulado_anterior_suma_todos_los_ejercicios_previos(self):
+		self.assertEqual(
+			estados.resultado_acumulado_anterior(
+				self.COMPANY_MULTI, f"{self.anio_actual}-12-31"
+			),
+			4000.0,
+		)
+		self.assertEqual(
+			estados.resultado_acumulado_anterior(
+				self.COMPANY_MULTI, f"{self.anio_previo}-12-31"
+			),
+			0.0,
+		)

@@ -125,6 +125,9 @@ ORDEN_SITUACION_FINANCIERA = [
 # Se calcula desde el Estado de Rendimiento Financiero, no desde una cuenta.
 RUBRO_RESULTADO_DEL_PERIODO = "Resultados positivos (ahorro)/negativo (desahorro)"
 
+# Acumula lo de ejercicios anteriores, esté capitalizado en 3.1.04 o no.
+RUBRO_RESULTADO_ACUMULADO = "Resultado acumulado"
+
 
 # --------------------------------------------------------------------------- #
 # 5.2 Estado de Rendimiento Financiero
