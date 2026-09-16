@@ -370,3 +370,71 @@ class TestEtiquetaActivo(BaseSecundarios):
 		self.assertEqual(
 			frappe.db.get_value("Print Format", "Etiqueta Activo QR", "doc_type"), "Asset"
 		)
+
+
+class TestValidacionRNC(BaseSecundarios):
+	"""§7 — sin servicio web público de la DGII, solo se valida lo que es determinista."""
+
+	def test_acepta_rnc_valido(self):
+		from tz_gobierno import rnc
+
+		# RNCs reales de instituciones públicas dominicanas.
+		self.assertTrue(rnc.rnc_valido("401007551"))
+		self.assertTrue(rnc.rnc_valido("430006272"))
+
+	def test_rechaza_rnc_con_digito_verificador_malo(self):
+		from tz_gobierno import rnc
+
+		self.assertFalse(rnc.rnc_valido("401007552"))
+		self.assertFalse(rnc.rnc_valido("123456789"))
+
+	def test_rechaza_longitud_incorrecta(self):
+		from tz_gobierno import rnc
+
+		self.assertFalse(rnc.rnc_valido("40100755"))
+		self.assertFalse(rnc.rnc_valido("4010075511"))
+		self.assertFalse(rnc.identificacion_valida(""))
+
+	def test_acepta_cedula_valida(self):
+		from tz_gobierno import rnc
+
+		self.assertTrue(rnc.cedula_valida("00113918205"))
+		self.assertFalse(rnc.cedula_valida("00113918206"))
+
+	def test_identificacion_valida_acepta_ambos_formatos(self):
+		from tz_gobierno import rnc
+
+		self.assertTrue(rnc.identificacion_valida("401-00755-1"))
+		self.assertTrue(rnc.identificacion_valida("001-1391820-5"))
+
+	def test_el_supplier_rechaza_un_rnc_invalido(self):
+		from tz_gobierno import rnc
+
+		rnc.instalar()
+		doc = frappe.get_doc(
+			{
+				"doctype": "Supplier",
+				"supplier_name": f"Suplidor RNC malo {frappe.generate_hash(length=5)}",
+				"supplier_group": "All Supplier Groups",
+				"tax_id": "123456789",
+			}
+		)
+		with self.assertRaises(frappe.ValidationError):
+			doc.insert(ignore_permissions=True)
+
+	def test_marcar_verificado_sella_la_fecha(self):
+		from tz_gobierno import rnc
+
+		rnc.instalar()
+		doc = frappe.get_doc(
+			{
+				"doctype": "Supplier",
+				"supplier_name": f"Suplidor RNC bueno {frappe.generate_hash(length=5)}",
+				"supplier_group": "All Supplier Groups",
+				"tax_id": "401007551",
+				"rnc_verificado": 1,
+			}
+		)
+		doc.flags.ignore_permissions = True
+		doc.insert()
+		self.assertEqual(str(doc.fecha_verificacion_rnc), nowdate())

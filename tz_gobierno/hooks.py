@@ -284,10 +284,13 @@ doc_events = {
 	"Respuesta Encuesta": {
 		"validate": "tz_gobierno.encuestas.validar_respuesta",
 	},
+	"Supplier": {
+		"validate": "tz_gobierno.rnc.validar_supplier",
+	},
 }
 
 
 # El campo de Bienes Nacionales en Asset es un Custom Field, no parte de un doctype
 # propio, porque extiende el Asset estándar de ERPNext. Se asegura en cada migrate
 # para que exista en cualquier sitio donde se instale el app.
-after_migrate = ["tz_gobierno.activos.instalar"]
+after_migrate = ["tz_gobierno.activos.instalar", "tz_gobierno.rnc.instalar"]

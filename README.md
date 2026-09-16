@@ -84,7 +84,7 @@ que no caben. En esos casos `account_name` se trunca con `…` y el nombre ofici
 | §3 Plan de cuentas DIGECOG | `digecog/coa_import.py` | Completo, 9 tests |
 | §4 Subledger presupuestario | `presupuesto.py` + doctypes `Linea/Movimiento Presupuestario` | Completo, 12 tests |
 | §5 Estados Financieros (5) | `digecog/estados.py` + 5 Script Reports | Completo, 21 tests |
-| §7 Módulos secundarios | `nomina.py`, `encuestas.py`, `activos.py` + doctypes | Completo, 22 tests |
+| §7 Módulos secundarios | `nomina.py`, `encuestas.py`, `activos.py`, `rnc.py` | Completo, 29 tests |
 | §5.6 Notas a los EEFF | doctype + reporte que avisa cuáles faltan | Completo |
 | §8 Módulos parametrizables | `nomina_bancaria.py`, `Importacion SIAB`, `Solicitud Tramite Pago` | Completo, 19 tests |
 
@@ -125,3 +125,34 @@ bench --site gob.tzcode.net run-tests --app tz_gobierno
 Los nombres de DocType van **sin tilde** (`Linea Presupuestaria`, no `Línea`) porque
 `frappe.scrub()` los convierte en nombres de módulo Python y de carpeta, y una tilde
 produce un identificador no-ASCII. El label con tilde se resuelve por traducción.
+
+
+---
+
+## Pendientes reales, por orden de importancia
+
+1. **Validar las 80 cuentas recuperadas contra el PDF oficial de DIGECOG.** Es el
+   único punto donde el sistema se apoya en un rescate de texto degradado y no en la
+   fuente oficial. Con la cláusula 16.1.1 de por medio, conviene cerrarlo antes de la
+   demo.
+2. **Confirmar el mapeo cuenta→rubro de los Estados Financieros** con quien conozca
+   los modelos de DIGECOG. La cobertura es total (ninguna cuenta queda fuera) y los
+   estados cuadran, pero que una cuenta caiga en el rubro *correcto* es un juicio
+   normativo que el código no puede verificar solo. Todo el mapeo está en un único
+   archivo, `digecog/mapeo.py`, precisamente para que revisarlo sea leer una tabla.
+3. **Clasificador presupuestario oficial** para el Estado 5.5: hoy el objeto del gasto
+   se aproxima por los grupos del plan DIGECOG. Marcado con `TODO` en `mapeo.py`.
+4. **Layout de Banreservas y formulario del CES**: los módulos ya son
+   parametrizables; cuando lleguen los documentos es editar registros, no programar.
+5. **Cédula del empleado**: `nomina_bancaria._cedula_de()` busca en varios campos
+   posibles porque ERPNext no tiene uno estándar. Conviene fijar un custom field.
+
+## Lo que este app decide distinto al spec, y por qué
+
+| Punto | Spec | Aquí | Motivo |
+|---|---|---|---|
+| Total de cuentas | 3,595 | 3,675 | El CSV perdió 80 cuentas por la extracción del PDF |
+| `disponible` | `modificado − comprometido` | `− comprometido − devengado − pagado` | Con la fórmula del spec, facturar una orden devolvía el presupuesto como si nada se hubiera gastado |
+| Reversos | etapa `Reversado` | igual, más `etapa_revertida` y `disparador_*` | Sin saber qué etapa anula un reverso y quién lo disparó, los saldos se iban a negativo |
+| Nombre del app | `tzcode_gov` | `tz_gobierno` | Coincide con el repo y con la convención `tz_*` |
+| Nombres de DocType | con tilde | sin tilde | `frappe.scrub()` los vuelve nombres de módulo Python |
