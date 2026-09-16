@@ -83,7 +83,7 @@ que no caben. En esos casos `account_name` se trunca con `…` y el nombre ofici
 |---|---|---|
 | §3 Plan de cuentas DIGECOG | `digecog/coa_import.py` | Completo, 9 tests |
 | §4 Subledger presupuestario | `presupuesto.py` + doctypes `Linea/Movimiento Presupuestario` | Completo, 12 tests |
-| §5 Estados Financieros (5) | `tz_gobierno/report/` | Pendiente |
+| §5 Estados Financieros (5) | `digecog/estados.py` + `digecog/mapeo.py` | Motor completo, 14 tests; faltan los Script Report para la UI |
 | §7 Módulos secundarios | — | Pendiente |
 | §8 Módulos parametrizables | — | Pendiente |
 
