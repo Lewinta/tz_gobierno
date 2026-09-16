@@ -136,6 +136,17 @@ noviembre estando en septiembre se nota.
 bench --site gob.tzcode.net run-tests --app tz_gobierno
 ```
 
+> **Correr los tests ensucia el sitio.** Cada bloque de pruebas monta su propia
+> institución (`TZ Gob …`) porque necesita un plan de cuentas controlado. Al terminar
+> quedan en el selector de compañías, que es justo lo que no quieres que vea un perito.
+> Antes de una demo:
+>
+> ```bash
+> bench --site gob.tzcode.net execute tz_gobierno.setup.limpieza.eliminar_companies_de_prueba
+> ```
+>
+> Nunca toca la institución del pliego.
+
 ## Convenciones
 
 Los nombres de DocType van **sin tilde** (`Linea Presupuestaria`, no `Línea`) porque
