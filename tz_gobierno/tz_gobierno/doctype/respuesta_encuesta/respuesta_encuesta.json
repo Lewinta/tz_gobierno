@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "format:RESP-{encuesta}-{#####}",
+ "creation": "2026-09-16 12:20:56.228845",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "encuesta",
+  "employee",
+  "cb1",
+  "anonima",
+  "fecha",
+  "sb1",
+  "respuestas"
+ ],
+ "fields": [
+  {
+   "fieldname": "encuesta",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Encuesta",
+   "options": "Encuesta",
+   "reqd": 1
+  },
+  {
+   "description": "Vac\u00edo si la encuesta se respondi\u00f3 de forma an\u00f3nima.",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Empleado",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "anonima",
+   "fieldtype": "Check",
+   "label": "An\u00f3nima"
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fecha",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb1",
+   "fieldtype": "Section Break",
+   "label": "Respuestas"
+  },
+  {
+   "fieldname": "respuestas",
+   "fieldtype": "Table",
+   "label": "Respuestas",
+   "options": "Respuesta Encuesta Detalle"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-16 12:20:56.228845",
+ "modified_by": "Administrator",
+ "module": "TZ Gobierno",
+ "name": "Respuesta Encuesta",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

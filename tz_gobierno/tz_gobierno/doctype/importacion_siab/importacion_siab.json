@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "format:SIAB-{YYYY}-{####}",
+ "creation": "2026-09-16 12:20:56.625655",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "archivo",
+  "cb1",
+  "fecha_importacion",
+  "estado",
+  "sb1",
+  "mapeo_columnas",
+  "sb2",
+  "bitacora",
+  "activos_creados"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Instituci\u00f3n",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "archivo",
+   "fieldtype": "Attach",
+   "label": "Archivo CSV",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fecha_importacion",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fecha de Importaci\u00f3n",
+   "reqd": 1
+  },
+  {
+   "default": "Borrador",
+   "fieldname": "estado",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Estado",
+   "options": "Borrador\nImportado\nCon errores"
+  },
+  {
+   "fieldname": "sb1",
+   "fieldtype": "Section Break",
+   "label": "Mapeo de Columnas"
+  },
+  {
+   "description": "JSON {columna_csv: campo_asset}. El layout de SIAB del CES puede diferir del de referencia, por eso el mapeo es configurable.",
+   "fieldname": "mapeo_columnas",
+   "fieldtype": "Small Text",
+   "label": "Mapeo de Columnas"
+  },
+  {
+   "fieldname": "sb2",
+   "fieldtype": "Section Break",
+   "label": "Resultado"
+  },
+  {
+   "fieldname": "bitacora",
+   "fieldtype": "Text",
+   "label": "Bit\u00e1cora",
+   "read_only": 1
+  },
+  {
+   "fieldname": "activos_creados",
+   "fieldtype": "Int",
+   "label": "Activos Creados",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-16 12:20:56.625655",
+ "modified_by": "Administrator",
+ "module": "TZ Gobierno",
+ "name": "Importacion SIAB",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

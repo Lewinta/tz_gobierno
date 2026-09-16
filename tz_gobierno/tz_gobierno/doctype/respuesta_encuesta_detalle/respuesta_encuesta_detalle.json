@@ -1,0 +1,55 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-09-16 12:20:56.155861",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pregunta",
+  "tipo_respuesta",
+  "respuesta"
+ ],
+ "fields": [
+  {
+   "columns": 5,
+   "fieldname": "pregunta",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Pregunta",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "tipo_respuesta",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tipo",
+   "read_only": 1
+  },
+  {
+   "columns": 3,
+   "fieldname": "respuesta",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Respuesta"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-09-16 12:20:56.155861",
+ "modified_by": "Administrator",
+ "module": "TZ Gobierno",
+ "name": "Respuesta Encuesta Detalle",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

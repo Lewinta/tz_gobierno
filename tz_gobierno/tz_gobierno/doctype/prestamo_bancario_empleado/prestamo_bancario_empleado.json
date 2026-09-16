@@ -1,0 +1,165 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-09-16 12:20:55.851930",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "company",
+  "cb1",
+  "banco",
+  "fecha_inicio",
+  "estado",
+  "sb1",
+  "monto_prestamo",
+  "cuota_mensual",
+  "cb2",
+  "numero_cuotas",
+  "cuotas_pagadas",
+  "saldo_pendiente",
+  "salary_component"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Empleado",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Nombre",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Instituci\u00f3n",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "El banco es el prestamista. La instituci\u00f3n solo es garante y descuenta la cuota por n\u00f3mina; el pasivo no es suyo.",
+   "fieldname": "banco",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Banco",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fecha_inicio",
+   "fieldtype": "Date",
+   "label": "Fecha de Inicio",
+   "reqd": 1
+  },
+  {
+   "default": "Activo",
+   "fieldname": "estado",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Estado",
+   "options": "Activo\nSaldado\nSuspendido"
+  },
+  {
+   "fieldname": "sb1",
+   "fieldtype": "Section Break",
+   "label": "Condiciones"
+  },
+  {
+   "fieldname": "monto_prestamo",
+   "fieldtype": "Currency",
+   "label": "Monto del Pr\u00e9stamo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cuota_mensual",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Cuota Mensual",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "numero_cuotas",
+   "fieldtype": "Int",
+   "label": "N\u00famero de Cuotas",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cuotas_pagadas",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Cuotas Pagadas",
+   "read_only": 1
+  },
+  {
+   "fieldname": "saldo_pendiente",
+   "fieldtype": "Currency",
+   "label": "Saldo Pendiente",
+   "read_only": 1
+  },
+  {
+   "description": "Componente de n\u00f3mina con el que se aplica el descuento.",
+   "fieldname": "salary_component",
+   "fieldtype": "Link",
+   "label": "Componente de Deducci\u00f3n",
+   "options": "Salary Component"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-16 12:20:55.851930",
+ "modified_by": "Administrator",
+ "module": "TZ Gobierno",
+ "name": "Prestamo Bancario Empleado",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

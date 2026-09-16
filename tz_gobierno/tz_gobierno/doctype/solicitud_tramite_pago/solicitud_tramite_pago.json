@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "format:STP-{YYYY}-{#####}",
+ "creation": "2026-09-16 12:20:56.338851",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "tipo_tramite",
+  "fecha",
+  "cb1",
+  "linea_presupuestaria",
+  "tipo_orden_pago",
+  "numero_orden",
+  "sb1",
+  "beneficiario",
+  "concepto",
+  "cb2",
+  "monto",
+  "funcionario_autorizante",
+  "estado"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Instituci\u00f3n",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tipo_tramite",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Tipo de Tr\u00e1mite",
+   "options": "N\u00f3mina\nBienes y servicios\nOtro",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fecha",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "L\u00ednea presupuestaria contra la que se tramita el pago.",
+   "fieldname": "linea_presupuestaria",
+   "fieldtype": "Link",
+   "label": "C\u00f3digo Program\u00e1tico",
+   "options": "Linea Presupuestaria"
+  },
+  {
+   "fieldname": "tipo_orden_pago",
+   "fieldtype": "Select",
+   "label": "Tipo de Orden de Pago",
+   "options": "Cheque\nTransferencia",
+   "reqd": 1
+  },
+  {
+   "fieldname": "numero_orden",
+   "fieldtype": "Data",
+   "label": "N\u00famero de Orden"
+  },
+  {
+   "fieldname": "sb1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "beneficiario",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Beneficiario",
+   "reqd": 1
+  },
+  {
+   "fieldname": "concepto",
+   "fieldtype": "Small Text",
+   "label": "Concepto",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "monto",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Monto",
+   "reqd": 1
+  },
+  {
+   "fieldname": "funcionario_autorizante",
+   "fieldtype": "Data",
+   "label": "Funcionario Autorizante"
+  },
+  {
+   "default": "Borrador",
+   "fieldname": "estado",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Estado",
+   "options": "Borrador\nEn revisi\u00f3n\nAprobado\nRechazado\nPagado"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-16 12:20:56.338851",
+ "modified_by": "Administrator",
+ "module": "TZ Gobierno",
+ "name": "Solicitud Tramite Pago",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

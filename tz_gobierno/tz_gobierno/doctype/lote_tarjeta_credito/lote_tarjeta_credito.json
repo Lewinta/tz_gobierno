@@ -1,0 +1,159 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "format:TC-{ultimos_4_digitos}-{periodo}",
+ "creation": "2026-09-16 12:20:55.732157",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "banco",
+  "ultimos_4_digitos",
+  "company",
+  "cb1",
+  "periodo",
+  "fecha_corte",
+  "estado",
+  "sb1",
+  "consumos",
+  "sb2",
+  "cuenta_tarjeta",
+  "cb2",
+  "monto_total",
+  "journal_entry"
+ ],
+ "fields": [
+  {
+   "fieldname": "banco",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Banco",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ultimos_4_digitos",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "\u00daltimos 4 d\u00edgitos",
+   "length": 4,
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Instituci\u00f3n",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Per\u00edodo del estado de cuenta, p. ej. 2026-09.",
+   "fieldname": "periodo",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Per\u00edodo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fecha_corte",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fecha de Corte",
+   "reqd": 1
+  },
+  {
+   "default": "Abierto",
+   "fieldname": "estado",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Estado",
+   "options": "Abierto\nConciliado"
+  },
+  {
+   "fieldname": "sb1",
+   "fieldtype": "Section Break",
+   "label": "Consumos"
+  },
+  {
+   "fieldname": "consumos",
+   "fieldtype": "Table",
+   "label": "Consumos",
+   "options": "Consumo Tarjeta Credito"
+  },
+  {
+   "fieldname": "sb2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "description": "Cuenta de pasivo contra la que se acreditan los consumos.",
+   "fieldname": "cuenta_tarjeta",
+   "fieldtype": "Link",
+   "label": "Cuenta por Pagar de la Tarjeta",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "monto_total",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Monto Total",
+   "read_only": 1
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Asiento Generado",
+   "options": "Journal Entry",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-16 12:20:55.732157",
+ "modified_by": "Administrator",
+ "module": "TZ Gobierno",
+ "name": "Lote Tarjeta Credito",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -274,4 +274,20 @@ doc_events = {
 		"on_submit": "tz_gobierno.presupuesto.registrar_pagado",
 		"on_cancel": "tz_gobierno.presupuesto.revertir_pagado",
 	},
+	# Préstamos bancarios del personal (§7): la institución es garante y retiene la
+	# cuota por nómina; el pasivo es del banco, no suyo.
+	"Salary Slip": {
+		"validate": "tz_gobierno.nomina.aplicar_deducciones_de_prestamos",
+		"on_submit": "tz_gobierno.nomina.registrar_cuotas_pagadas",
+		"on_cancel": "tz_gobierno.nomina.revertir_cuotas_pagadas",
+	},
+	"Respuesta Encuesta": {
+		"validate": "tz_gobierno.encuestas.validar_respuesta",
+	},
 }
+
+
+# El campo de Bienes Nacionales en Asset es un Custom Field, no parte de un doctype
+# propio, porque extiende el Asset estándar de ERPNext. Se asegura en cada migrate
+# para que exista en cualquier sitio donde se instale el app.
+after_migrate = ["tz_gobierno.activos.instalar"]
