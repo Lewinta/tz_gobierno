@@ -279,3 +279,89 @@ class TestEstadosFinancieros(IntegrationTestCase):
 		self.assertIn("2     Gastos totales", conceptos)
 		for fila in filas:
 			self.assertEqual(flt(fila["presupuesto_ejecutado"]), 0.0)
+
+
+class TestScriptReports(IntegrationTestCase):
+	"""Ejecuta los 5 reportes por la misma vía que usa la UI.
+
+	Los tests de arriba prueban el motor; estos prueban que los Script Report estén
+	bien registrados y que sus `execute()` devuelvan columnas y filas sin reventar.
+	Sin esto, un reporte podría estar perfecto en Python y roto en el escritorio, que
+	es donde lo va a abrir el perito en la demo.
+	"""
+
+	@classmethod
+	def setUpClass(cls):
+		super().setUpClass()
+		cls.fiscal_year = asegurar_fiscal_year()
+		cls.anio = int(cls.fiscal_year[:4])
+		# Reusa la institución de TestEstadosFinancieros si ya fue montada.
+		if not frappe.db.exists("Company", COMPANY):
+			crear_company_sin_coa_estandar(COMPANY, ABBR)
+
+	def _correr(self, nombre, filtros):
+		from frappe.desk.query_report import run
+
+		resultado = run(nombre, filters=filtros, ignore_prepared_report=True)
+		self.assertTrue(resultado.get("columns"), f"{nombre} no devolvió columnas")
+		return resultado
+
+	def test_los_cinco_reportes_estan_registrados(self):
+		esperados = [
+			"Estado de Situacion Financiera DIGECOG",
+			"Estado de Rendimiento Financiero DIGECOG",
+			"Estado de Cambios en Patrimonio DIGECOG",
+			"Estado de Flujo de Efectivo DIGECOG",
+			"Estado de Comparacion Presupuesto Ejecucion DIGECOG",
+		]
+		for nombre in esperados:
+			self.assertTrue(frappe.db.exists("Report", nombre), f"falta el reporte {nombre}")
+			self.assertEqual(
+				frappe.db.get_value("Report", nombre, "report_type"), "Script Report"
+			)
+
+	def test_situacion_financiera_corre(self):
+		r = self._correr(
+			"Estado de Situacion Financiera DIGECOG",
+			{"company": COMPANY, "as_on_date": f"{self.anio}-12-31",
+			 "mostrar_periodo_anterior": 1},
+		)
+		self.assertEqual(len(r["columns"]), 3)
+
+	def test_rendimiento_financiero_corre(self):
+		self._correr(
+			"Estado de Rendimiento Financiero DIGECOG",
+			{"company": COMPANY, "from_date": f"{self.anio}-01-01",
+			 "to_date": f"{self.anio}-12-31", "mostrar_periodo_anterior": 0},
+		)
+
+	def test_flujo_efectivo_corre(self):
+		self._correr(
+			"Estado de Flujo de Efectivo DIGECOG",
+			{"company": COMPANY, "from_date": f"{self.anio}-01-01",
+			 "to_date": f"{self.anio}-12-31"},
+		)
+
+	def test_cambios_patrimonio_corre(self):
+		r = self._correr(
+			"Estado de Cambios en Patrimonio DIGECOG",
+			{"company": COMPANY, "fiscal_year": self.fiscal_year},
+		)
+		# Concepto + 4 componentes del patrimonio + total.
+		self.assertEqual(len(r["columns"]), 6)
+
+	def test_comparacion_presupuesto_corre(self):
+		r = self._correr(
+			"Estado de Comparacion Presupuesto Ejecucion DIGECOG",
+			{"company": COMPANY, "fiscal_year": self.fiscal_year},
+		)
+		self.assertEqual(len(r["columns"]), 5)
+
+	def test_reportes_sin_filtros_no_revientan(self):
+		"""Al abrirlos el usuario ve el reporte vacío, no un traceback."""
+		from frappe.desk.query_report import run
+
+		for nombre in ("Estado de Situacion Financiera DIGECOG",
+		               "Estado de Flujo de Efectivo DIGECOG"):
+			resultado = run(nombre, filters={}, ignore_prepared_report=True)
+			self.assertEqual(resultado.get("result"), [])
