@@ -256,3 +256,22 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+# Subledger presupuestario (§4 del spec CES-0009): el ciclo compromiso → devengado
+# → pagado se engancha al flujo estándar de compras de ERPNext, para que el usuario
+# no tenga que registrar nada aparte.
+doc_events = {
+	"Purchase Order": {
+		"before_submit": "tz_gobierno.presupuesto.validar_disponibilidad",
+		"on_submit": "tz_gobierno.presupuesto.registrar_compromiso",
+		"on_cancel": "tz_gobierno.presupuesto.revertir_compromiso",
+	},
+	"Purchase Invoice": {
+		"on_submit": "tz_gobierno.presupuesto.registrar_devengado",
+		"on_cancel": "tz_gobierno.presupuesto.revertir_devengado",
+	},
+	"Payment Entry": {
+		"on_submit": "tz_gobierno.presupuesto.registrar_pagado",
+		"on_cancel": "tz_gobierno.presupuesto.revertir_pagado",
+	},
+}

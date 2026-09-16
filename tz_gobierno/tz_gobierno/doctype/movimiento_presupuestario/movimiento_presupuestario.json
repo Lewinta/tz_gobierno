@@ -1,0 +1,157 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-09-16 11:55:43.328392",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "linea_presupuestaria",
+  "fecha",
+  "cb_1",
+  "etapa",
+  "etapa_revertida",
+  "monto",
+  "sb_ref",
+  "referencia_doctype",
+  "referencia_name",
+  "disparador_doctype",
+  "disparador_name",
+  "cb_2",
+  "observaciones"
+ ],
+ "fields": [
+  {
+   "default": "MP-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Serie",
+   "options": "MP-.YYYY.-.#####"
+  },
+  {
+   "fieldname": "linea_presupuestaria",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Línea Presupuestaria",
+   "options": "Linea Presupuestaria",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fecha",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Fecha",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "etapa",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Etapa",
+   "options": "Comprometido\nDevengado\nPagado\nReversado",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.etapa=='Reversado'",
+   "description": "Qué etapa anula este reverso. El spec exige registrar reversos como etapa 'Reversado' con monto positivo (nunca negativo sobre la etapa original) para mantener trazabilidad; sin este campo no se puede recalcular qué saldo revertir.",
+   "fieldname": "etapa_revertida",
+   "fieldtype": "Select",
+   "label": "Etapa Revertida",
+   "options": "\nComprometido\nDevengado\nPagado"
+  },
+  {
+   "fieldname": "monto",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Monto",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_ref",
+   "fieldtype": "Section Break",
+   "label": "Referencia"
+  },
+  {
+   "fieldname": "referencia_doctype",
+   "fieldtype": "Link",
+   "label": "Documento Origen",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "referencia_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Nº Documento",
+   "options": "referencia_doctype"
+  },
+  {
+   "description": "Documento que provocó el movimiento, cuando no es el mismo al que afecta. Al devengar una factura, el movimiento libera el compromiso de la ORDEN (referencia) pero lo dispara la FACTURA.",
+   "fieldname": "disparador_doctype",
+   "fieldtype": "Link",
+   "label": "Documento Disparador",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "disparador_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Nº Disparador",
+   "options": "disparador_doctype"
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "observaciones",
+   "fieldtype": "Small Text",
+   "label": "Observaciones"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-16 11:55:43.328392",
+ "modified_by": "Administrator",
+ "module": "TZ Gobierno",
+ "name": "Movimiento Presupuestario",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

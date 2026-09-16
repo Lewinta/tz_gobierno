@@ -1,0 +1,167 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-09-16 11:55:43.060814",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "company",
+  "fiscal_year",
+  "cb_1",
+  "account",
+  "cost_center",
+  "project",
+  "sb_montos",
+  "monto_formulado",
+  "monto_modificado",
+  "cb_2",
+  "monto_comprometido",
+  "monto_devengado",
+  "monto_pagado",
+  "disponible"
+ ],
+ "fields": [
+  {
+   "default": "LP-.YYYY.-.####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Serie",
+   "options": "LP-.YYYY.-.####"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Instituci\u00f3n",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "A\u00f1o Fiscal",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Cuenta DIGECOG",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Centro de Costo",
+   "options": "Cost Center",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Programa o Proyecto",
+   "options": "Project"
+  },
+  {
+   "fieldname": "sb_montos",
+   "fieldtype": "Section Break",
+   "label": "Montos"
+  },
+  {
+   "description": "Presupuesto inicial aprobado.",
+   "fieldname": "monto_formulado",
+   "fieldtype": "Currency",
+   "label": "Presupuesto Formulado"
+  },
+  {
+   "description": "Presupuesto reformado tras modificaciones. Es el techo contra el que se valida.",
+   "fieldname": "monto_modificado",
+   "fieldtype": "Currency",
+   "label": "Presupuesto Modificado",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "monto_comprometido",
+   "fieldtype": "Currency",
+   "label": "Comprometido",
+   "read_only": 1
+  },
+  {
+   "fieldname": "monto_devengado",
+   "fieldtype": "Currency",
+   "label": "Devengado",
+   "read_only": 1
+  },
+  {
+   "fieldname": "monto_pagado",
+   "fieldtype": "Currency",
+   "label": "Pagado",
+   "read_only": 1
+  },
+  {
+   "description": "monto_modificado - monto_comprometido - monto_devengado - monto_pagado",
+   "fieldname": "disponible",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Disponible",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-16 11:55:43.060814",
+ "modified_by": "Administrator",
+ "module": "TZ Gobierno",
+ "name": "Linea Presupuestaria",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

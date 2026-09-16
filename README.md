@@ -81,8 +81,8 @@ que no caben. En esos casos `account_name` se trunca con `…` y el nombre ofici
 
 | Sección del spec | Módulo | Estado |
 |---|---|---|
-| §3 Plan de cuentas DIGECOG | `digecog/coa_import.py` | Importa y verifica |
-| §4 Subledger presupuestario | `tz_gobierno/doctype/linea_presupuestaria`, `movimiento_presupuestario` | En curso |
+| §3 Plan de cuentas DIGECOG | `digecog/coa_import.py` | Completo, 9 tests |
+| §4 Subledger presupuestario | `presupuesto.py` + doctypes `Linea/Movimiento Presupuestario` | Completo, 12 tests |
 | §5 Estados Financieros (5) | `tz_gobierno/report/` | Pendiente |
 | §7 Módulos secundarios | — | Pendiente |
 | §8 Módulos parametrizables | — | Pendiente |
